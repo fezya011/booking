@@ -2,71 +2,82 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', config('app.name', 'Hotel Booking'))</title>
 
-    <title>@yield('title', 'Hotel Booking') - {{ config('app.name') }}</title>
-
-    <!-- Tailwind CSS -->
+    {{-- Tailwind CSS CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet"/>
-
+    {{-- Кастомные стили --}}
     <style>
-        body {
-            font-family: 'Instrument Sans', sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        /* Убеждаемся, что контент поверх 3D */
         main {
-            flex: 1;
+            position: relative;
+            z-index: 150;
         }
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+
+        /* Стили для блюра */
+        .backdrop-blur-sm {
+            backdrop-filter: blur(8px);
         }
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+
+        @media (max-width: 768px) {
+            .backdrop-blur-sm {
+                backdrop-filter: blur(5px);
+            }
         }
-        @keyframes blink {
-            0%   { color: #F53003; }
-            40%  { color: #F53003; }
-            60%  { color: #1b1b18; }
-            100% { color: #1b1b18; }
+
+        /* Анимации для карточек */
+        .interest-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .logo-cursor {
-            color: #F53003;
-            transition: color 0.3s ease;
+
+        .interest-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.1);
         }
-        .logo-wrap:hover .logo-cursor {
-            animation: blink 1.4s ease-in-out infinite alternate;
+
+        /* Эффект для формы поиска */
+        .search-form input:focus {
+            transform: scale(1.01);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Тень для заголовка */
+        .hero-title {
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Убеждаемся, что 3D контейнер не перекрывает клики */
+        #earth-container {
+            pointer-events: none;
+        }
+
+        #earth-canvas {
+            pointer-events: auto;
         }
     </style>
 
+    {{-- Дополнительные стили --}}
     @stack('styles')
-</head>
-<body class="bg-[#FDFDFC] text-[#1b1b18]">
 
+    {{-- Alpine.js --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="antialiased">
+{{-- Хедер --}}
 @include('partials.header')
 
+{{-- Основной контент --}}
 <main>
-    @include('partials.alerts')
     @yield('content')
 </main>
 
+{{-- Футер --}}
 @include('partials.footer')
 
-<!-- Alpine.js для интерактивности -->
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
-
+{{-- Дополнительные скрипты --}}
 @stack('scripts')
 </body>
 </html>

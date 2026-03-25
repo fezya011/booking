@@ -1,4 +1,4 @@
-<footer class="bg-[#1b1b18] text-white mt-auto">
+<footer class="bg-[#1b1b18] text-white mt-auto relative z-20">
     <div class="container mx-auto px-4 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- About -->
@@ -49,7 +49,6 @@
                     <li><a href="#" class="text-[#e3e3e0] hover:text-white transition-colors">Безопасность</a></li>
                     <li><a href="#" class="text-[#e3e3e0] hover:text-white transition-colors">Условия использования</a></li>
                     <li><a href="#" class="text-[#e3e3e0] hover:text-white transition-colors">Политика конфиденциальности</a></li>
-                    <li><a href="#" class="text-[#e3e3e0] hover:text-white transition-colors">Настройки cookies</a></li>
                 </ul>
             </div>
 

@@ -1,8 +1,7 @@
-{{-- /* Alpine.js Directives */ --}}
-<header class="border-b border-gray-100 bg-white">
+<header class="border-b border-gray-100 bg-white relative z-20">
     <div class="container mx-auto px-4 lg:px-8 max-w-6xl">
         <div class="flex items-center justify-between h-16 lg:h-20">
-            <!-- Logo (минималистичный) -->
+            <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center text-xl font-light tracking-tight">
                     <span class="text-gray-900">hotel</span>
@@ -11,7 +10,7 @@
                 </a>
             </div>
 
-            <!-- Desktop Navigation (минималистичный) -->
+            <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('home') }}"
                    class="text-sm {{ request()->routeIs('home') ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-600' }} transition-colors">
@@ -32,7 +31,7 @@
                 </a>
             </nav>
 
-            <!-- User Menu / Auth Links (минималистичный) -->
+            <!-- User Menu -->
             <div class="flex items-center space-x-4">
                 @auth
                     <div class="relative" x-data="{ open: false }">
@@ -46,15 +45,9 @@
                             </svg>
                         </button>
 
-                        <!-- Dropdown menu (минималистичный) -->
                         <div x-show="open"
                              @click.away="open = false"
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="transform opacity-0 scale-95"
-                             x-transition:enter-end="transform opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="transform opacity-100 scale-100"
-                             x-transition:leave-end="transform opacity-0 scale-95"
+                             x-transition
                              class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-1 z-50 border border-gray-100">
                             <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                                 Мой профиль
@@ -94,15 +87,9 @@
                         </svg>
                     </button>
 
-                    <!-- Mobile menu (hidden by default) -->
                     <div x-show="mobileOpen"
                          @click.away="mobileOpen = false"
-                         x-transition:enter="transition ease-out duration-100"
-                         x-transition:enter-start="transform opacity-0 scale-95"
-                         x-transition:enter-end="transform opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-75"
-                         x-transition:leave-start="transform opacity-100 scale-100"
-                         x-transition:leave-end="transform opacity-0 scale-95"
+                         x-transition
                          class="absolute left-0 right-0 top-16 bg-white border-b border-gray-100 shadow-lg z-40">
                         <nav class="container mx-auto px-4 py-4 space-y-3">
                             <a href="{{ route('home') }}" class="block py-2 text-gray-600 hover:text-gray-900 transition-colors">Главная</a>
@@ -118,7 +105,6 @@
     </div>
 </header>
 
-{{-- Стили для x-cloak --}}
 <style>
     [x-cloak] { display: none !important; }
 </style>

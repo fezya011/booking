@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class ApiService
 {
@@ -17,10 +18,49 @@ class ApiService
 
     public function get(string $endpoint, array $params = [])
     {
+        // 🔥 Добавляем /v1/ к endpoint
+        $url = $this->baseUrl . '/api/v1/' . $endpoint;
+
         $response = Http::withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-        ])->get($this->baseUrl . '/api/' . $endpoint, $params);
+        ])->get($url, $params);
+
+        return $response->json();
+    }
+
+    public function post(string $endpoint, array $data = [])
+    {
+        $url = $this->baseUrl . '/api/v1/' . $endpoint;
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post($url, $data);
+
+        return $response->json();
+    }
+
+    public function put(string $endpoint, array $data = [])
+    {
+        $url = $this->baseUrl . '/api/v1/' . $endpoint;
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->put($url, $data);
+
+        return $response->json();
+    }
+
+    public function delete(string $endpoint)
+    {
+        $url = $this->baseUrl . '/api/v1/' . $endpoint;
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->delete($url);
 
         return $response->json();
     }
