@@ -1,11 +1,10 @@
-{{-- resources/views/home.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Hotel Booking - Найдите идеальное место')
 
 @section('content')
     {{-- Основной контент с прозрачным фоном --}}
-    <div style="position: relative; z-index: 10; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); min-height: 100vh;">
+    <div style="position: relative;">
         <!-- Hero секция -->
         <div class="border-b border-gray-200/50">
             <div class="container mx-auto px-4 lg:px-8 py-12 lg:py-16 max-w-6xl">

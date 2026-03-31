@@ -96,10 +96,6 @@
 
 <div id="earth-container">
     <canvas id="earth-canvas"></canvas>
-    <div class="earth-controls">
-        <button id="toggle-rotation">⏸️ Пауза</button>
-        <button id="reset-view">🔄 Сброс</button>
-    </div>
 </div>
 
 @push('scripts')

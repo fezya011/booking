@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Web;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -40,15 +42,33 @@ class AuthController extends Controller
         ]);
 
         if (isset($response['success']) && $response['success']) {
-            Session::put('api_token', $response['data']['token']);
-            Session::put('user', $response['data']['user']);
+            $token = $response['data']['token'] ?? null;
+            $user = $response['data']['user'] ?? $response['data'] ?? null;
 
-            return redirect()->intended(route('home'))->with('success', 'Добро пожаловать!');
+            // 🔥 ОТЛАДКА
+            Log::info('Token and user', [
+                'token_exists' => !empty($token),
+                'user_exists' => !empty($user)
+            ]);
+
+            if ($token && $user) {
+                Session::put('api_token', $token);
+                Session::put('user', $user);
+
+                // 🔥 ОТЛАДКА - проверяем, что сохранилось
+                Log::info('Session after login', [
+                    'api_token' => Session::get('api_token'),
+                    'user' => Session::get('user')
+                ]);
+
+                return redirect()->intended(route('home'))->with('success', 'Добро пожаловать!');
+            }
         }
 
-        return back()->withErrors([
-            'email' => $response['message'] ?? 'Неверные учетные данные',
-        ])->withInput();
+        // Обработка ошибок API
+        $errors = $this->parseApiErrors($response);
+
+        return back()->withErrors($errors)->withInput();
     }
 
     /**
@@ -78,15 +98,21 @@ class AuthController extends Controller
         ]);
 
         if (isset($response['success']) && $response['success']) {
-            Session::put('api_token', $response['data']['token']);
-            Session::put('user', $response['data']['user']);
+            $token = $response['data']['token'] ?? null;
+            $user = $response['data']['user'] ?? $response['data'] ?? null;
 
-            return redirect()->route('home')->with('success', 'Регистрация успешна! Добро пожаловать!');
+            if ($token && $user) {
+                Session::put('api_token', $token);
+                Session::put('user', $user);
+
+                return redirect()->route('home')->with('success', 'Регистрация успешна! Добро пожаловать!');
+            }
         }
 
-        return back()->withErrors([
-            'email' => $response['message'] ?? 'Ошибка регистрации',
-        ])->withInput();
+        // Обработка ошибок API
+        $errors = $this->parseApiErrors($response);
+
+        return back()->withErrors($errors)->withInput();
     }
 
     /**
@@ -101,5 +127,54 @@ class AuthController extends Controller
         }
 
         return redirect()->route('home')->with('success', 'Вы вышли из системы');
+    }
+
+    /**
+     * Парсинг ошибок от API
+     */
+    private function parseApiErrors(array $response): array
+    {
+        $errors = [];
+
+        // Сообщение об ошибке
+        $message = $response['message'] ?? 'Произошла ошибка. Попробуйте еще раз.';
+
+        // Ошибки валидации от API
+        if (isset($response['errors']) && is_array($response['errors'])) {
+            foreach ($response['errors'] as $field => $fieldErrors) {
+                $errors[$field] = is_array($fieldErrors) ? $fieldErrors[0] : $fieldErrors;
+            }
+        }
+
+        // Если нет специфичных ошибок, добавляем общее сообщение
+        if (empty($errors)) {
+            // Определяем поле для ошибки
+            $field = $this->getErrorField($response);
+            $errors[$field] = $message;
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Определение поля для общей ошибки
+     */
+    private function getErrorField(array $response): string
+    {
+        $message = strtolower($response['message'] ?? '');
+
+        if (str_contains($message, 'email')) {
+            return 'email';
+        }
+
+        if (str_contains($message, 'password')) {
+            return 'password';
+        }
+
+        if (str_contains($message, 'name') || str_contains($message, 'имя')) {
+            return 'name';
+        }
+
+        return 'email';
     }
 }

@@ -14,7 +14,6 @@
         /* Убеждаемся, что контент поверх 3D */
         main {
             position: relative;
-            z-index: 150;
         }
 
         /* Стили для блюра */
@@ -61,11 +60,8 @@
 
     {{-- Дополнительные стили --}}
     @stack('styles')
-
-    {{-- Alpine.js --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="antialiased">
+<body>
 {{-- Хедер --}}
 @include('partials.header')
 
@@ -77,7 +73,8 @@
 {{-- Футер --}}
 @include('partials.footer')
 
-{{-- Дополнительные скрипты --}}
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 @stack('scripts')
 </body>
 </html>

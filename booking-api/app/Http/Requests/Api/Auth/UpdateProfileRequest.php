@@ -18,7 +18,6 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:255',
             'phone' => 'nullable|string|max:30|unique:users,phone,' . $userId,
-            'avatar' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'bio' => 'nullable|string|max:500',
             'country' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',

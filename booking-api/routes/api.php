@@ -51,6 +51,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
         Route::post('/auth/refresh', [AuthController::class, 'refresh']);
         Route::post('/auth/logout-all', [AuthController::class, 'logoutAll']);
+        Route::post('/auth/avatar', [AuthController::class, 'uploadAvatar']);
+        Route::delete('/auth/avatar', [AuthController::class, 'deleteAvatar']);
 
 
         // Бронирования

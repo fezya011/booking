@@ -16,6 +16,9 @@ use App\Services\Auth\TokenService;
 use App\Services\Auth\ChangePasswordService;
 use App\Services\Auth\ProfileService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -123,6 +126,63 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Инструкции по сбросу пароля отправлены на ваш email'
+        ]);
+    }
+
+    /**
+     * 🔥 НОВЫЙ МЕТОД: Загрузка аватара пользователя
+     */
+    public function uploadAvatar(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $path = $request->file('avatar')->store('avatars/' . $user->id, 'public');
+        $user->update(['avatar' => $path]);
+
+        // 🔥 Полный URL для отладки
+        $fullUrl = Storage::disk('public')->url($path);
+
+        Log::info('Avatar uploaded', [
+            'path' => $path,
+            'full_url' => $fullUrl,
+            'user_id' => $user->id
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Аватар загружен',
+            'data' => [
+                'avatar_url' => $fullUrl,  // ← возвращаем полный URL
+                'path' => $path
+            ]
+        ]);
+    }
+
+    /**
+     * 🔥 НОВЫЙ МЕТОД: Удаление аватара
+     */
+    public function deleteAvatar(): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+            $user->update(['avatar' => null]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Аватар удален',
         ]);
     }
 
